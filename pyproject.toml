@@ -19,7 +19,7 @@ classifiers = [
     "Intended Audience :: Developers",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
-dependencies = ["jax"]
+dependencies = ["jax", "flax"]
 keywords = ["image classification", "resnet", "deep learning"]
 license = { file = "LICENSE" }
 urls = { Homepage="https://github.com/tahashieenavaz/resnet-jax", Repository="https://github.com/tahashieenavaz/resnet-jax", Documentation="https://github.com/tahashieenavaz/resnet-jax#readme" }
