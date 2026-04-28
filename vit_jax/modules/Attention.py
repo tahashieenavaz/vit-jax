@@ -11,7 +11,7 @@ class Attention(nn.Module):
 
     @nn.compact
     def __call__(self, x: jax.Array, deterministic: False):
-        batch_size, sequence_size, _ = x.shape
+        batch_size, sequence_length, _ = x.shape
         scale = self.head_dimension**-0.5
         project_output = not (self.heads == 1 and self.dim_head == self.dim)
         inner_dimension = self.head_dimension * self.heads
@@ -22,7 +22,7 @@ class Attention(nn.Module):
 
         def rearrange_to_heads(t):
             return jax.numpy.transpose(
-                t.reshape((batch_size, sequence_size, self.heads, self.dim_head)),
+                t.reshape((batch_size, sequence_length, self.heads, self.dim_head)),
                 (0, 2, 1, 3),
             )
 
@@ -36,7 +36,7 @@ class Attention(nn.Module):
 
         output = jax.numpy.matmul(attention, v)
         output = jax.numpy.transpose(output, (0, 2, 1, 3))
-        output = output.reshape((batch_size, sequence_size, inner_dimension))
+        output = output.reshape((batch_size, sequence_length, inner_dimension))
 
         if project_output:
             output = nn.Dense(self.dim)(output)
@@ -49,24 +49,24 @@ class Attention(nn.Module):
 
 if __name__ == "__main__":
     batch_size = 1
-    seq_len = 16
-    dim = 32
+    sequence_length = 16
+    dimension = 32
     heads = 8
 
     key = jax.random.PRNGKey(0)
     init_key, data_key, dropout_key = jax.random.split(key, 3)
 
-    dummy_x = jax.random.normal(data_key, (batch_size, seq_len, dim))
-    attention_module = Attention(dim=dim, heads=heads, dropout_rate=0.1)
+    dummy_x = jax.random.normal(data_key, (batch_size, sequence_length, dimension))
+    attention_module = Attention(dimension=dimension, heads=heads, dropout=0.1)
     variables = attention_module.init(init_key, dummy_x)
     print("✅ Model initialized successfully!")
     print(f"Input shape: {dummy_x.shape}")
 
     output_eval = attention_module.apply(variables, dummy_x, deterministic=True)
     print(f"Eval output shape: {output_eval.shape}")
-    out_train = attention_module.apply(
+    output_train = attention_module.apply(
         variables, dummy_x, deterministic=False, rngs={"dropout": dropout_key}
     )
-    print(f"Train output shape: {out_train.shape}")
+    print(f"Train output shape: {output_train.shape}")
     assert output_eval.shape == dummy_x.shape, "Output shape should match input shape!"
     print("✅ All tests passed!")
