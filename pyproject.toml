@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel", "setuptools_scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vit-jax"
+version = "0.0.01"
+authors = [
+  { name="Taha Shieenavaz", email="tahashieenavaz@gmail.com" },
+]
+description = "A fast, modern, dependency free implementation of Vision Transformers with JAX."
+readme = "README.md"
+requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = ["jax"]
+keywords = ["image classification", "resnet", "deep learning"]
+license = { file = "LICENSE" }
+urls = { Homepage="https://github.com/tahashieenavaz/resnet-jax", Repository="https://github.com/tahashieenavaz/resnet-jax", Documentation="https://github.com/tahashieenavaz/resnet-jax#readme" }
+
+[tool.setuptools.packages.find]
+where = ["."]
+exclude = ["tests*", "docs*"]
+
+[tool.setuptools.package-data]
+vit_jax = ["*.md", "*.txt", "*.png"]
