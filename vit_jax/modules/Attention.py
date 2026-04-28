@@ -37,3 +37,30 @@ class Attention(nn.Module):
             output = nn.Dropout(rate=self.dropout_rate, deterministic=deterministic)(output)
 
         return output
+
+if __name__ == "__main__":
+    batch_size = 1
+    seq_len = 16
+    dim = 32
+    heads = 8
+    
+    key = jax.random.PRNGKey(0)
+    init_key, data_key, dropout_key = jax.random.split(key, 3)
+
+    dummy_x = jax.random.normal(data_key, (batch_size, seq_len, dim))
+    attention_module = Attention(dim=dim, heads=heads, dropout_rate=0.1)
+    variables = attention_module.init(init_key, dummy_x)
+    print("✅ Model initialized successfully!")
+    print(f"Input shape: {dummy_x.shape}")
+
+    output_eval = attention_module.apply(variables, dummy_x, deterministic=True)
+    print(f"Eval output shape: {output_eval.shape}")
+    out_train = attention_module.apply(
+        variables, 
+        dummy_x, 
+        deterministic=False, 
+        rngs={'dropout': dropout_key}
+    )
+    print(f"Train output shape: {out_train.shape}")
+    assert output_eval.shape == dummy_x.shape, "Output shape should match input shape!"
+    print("✅ All tests passed!")
