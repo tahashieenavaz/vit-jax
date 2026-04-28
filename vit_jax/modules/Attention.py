@@ -1,5 +1,5 @@
 import jax
-from flax.linen import nn
+import flax.linen as nn
 from typing import Annotated
 
 
